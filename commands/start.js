@@ -12,8 +12,16 @@ module.exports = {
                 .setRequired(true)
                 .addChoices(
                     {
+                        name: 'Guarded OG',
+                        value: 'guarded-og',
+                    },
+                    {
                         name: 'Safe',
                         value: 'safe',
+                    },
+                    {
+                        name: 'Safe - Season 2',
+                        value: 'stwosafe',
                     },
                     {
                         name: 'Casual',
@@ -28,12 +36,16 @@ module.exports = {
                         value: 'nimble',
                     },
                     {
+                        name: 'Nimble Lite',
+                        value: 'nimble-lite',
+                    },
+                    {
                         name: 'Warlock',
                         value: 'warlock',
                     },
                     {
-                        name: 'Beyond',
-                        value: 'beyond',
+                        name: 'Expedition',
+                        value: 'expedition',
                     },
                     {
                         name: 'Mobility',
@@ -44,30 +56,6 @@ module.exports = {
                         value: 'target-confirmed',
                     },
                     {
-                        name: 'Nimble Lite',
-                        value: 'nimble-lite',
-                    },
-                    {
-                        name: 'Recycler',
-                        value: 'recycler',
-                    },
-                    {
-                        name: 'Safe - Season 2',
-                        value: 'stwosafe',
-                    },
-                    {
-                        name: 'Leg Day',
-                        value: 'leg-day',
-                    },
-                    {
-                        name: 'Beyond',
-                        value: 'beyond',
-                    },
-                    {
-                        name: 'Big Toss',
-                        value: 'big-toss',
-                    },
-                    {
                         name: 'Rampage',
                         value: 'rampage',
                     },
@@ -76,20 +64,36 @@ module.exports = {
                         value: 'rampage-25te',
                     },
                     {
+                        name: 'Beyond',
+                        value: 'beyond',
+                    },
+                    {
+                        name: 'Leg Day',
+                        value: 'leg-day',
+                    },
+                    {
+                        name: 'Big Toss',
+                        value: 'big-toss',
+                    },
+                    {
                         name: 'Max Rando',
                         value: 'max-rando',
                     },
                     {
-                        name: 'Expedition',
-                        value: 'expedition',
+                        name: 'Boss Rush',
+                        value: 'boss-rush',
                     },
                     {
                         name: 'Gear Rush',
                         value: 'gear-rush',
                     },
                     {
-                        name: 'Boss Rush',
-                        value: 'boss-rush',
+                        name: 'Recycler',
+                        value: 'recycler',
+                    },
+                    {
+                        name: 'Battle Mage',
+                        value: 'battle-mage',
                     },
                     {
                         name: 'Custom',
