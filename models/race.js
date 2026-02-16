@@ -34,6 +34,7 @@ module.exports = class Race {
         this.replays = [];
         this.referenceReplays = {};
         this.raceId = null;
+        this.forcedCategory = null;
     }
 
     includes(id) {
@@ -205,8 +206,9 @@ module.exports = class Race {
         this.seedName = name;
     }
 
-    initiate(category, unranked, tournament, interaction, raceChannel, bingoLockout, bingoPassword, optionsMap) {
+    initiate(category, unranked, tournament, interaction, raceChannel, bingoLockout, bingoPassword, optionsMap, forceCategory) {
         this.defaults();
+        if(forceCategory) this.forcedCategory = forceCategory;
         this.status = 'RACE: WAITING FOR PLAYERS';
         this.category = category;
         this.ranked = !unranked;
@@ -351,9 +353,10 @@ module.exports = class Race {
     }
 
     end() {
-        
         if (!this.playersForfeited()) {
-            let adjustments = elo.resolveMatch(this.players, this.category, this.ranked, this.raceId);
+            let raceCategory = this.category;
+            if(this.forcedCategory !== null) raceCategory = this.forcedCategory;
+            let adjustments = elo.resolveMatch(this.players, raceCategory, this.ranked, this.raceId);
             if(this.ranked){
                 for (let i = 0; i < this.players.length; i++) {
                     this.players[i].adjustment = adjustments[i];
@@ -524,6 +527,7 @@ module.exports = class Race {
         this.seedName = '';
         this.replays = [];
         this.raceId = uuidv4();
+        this.forcedCategory = null;
     }
 
     close() {
