@@ -53,6 +53,7 @@ module.exports = class Race {
     addPlayer(username, id) {
         let player = new Player(username, id);
         this.players.push(player);
+        data.curAddPlayer(username);
     }
 
     joinPlayer(user) {
@@ -62,6 +63,7 @@ module.exports = class Race {
         if (this.includes(user.id)) {
             this.removePlayer(user.id);
             this.update();
+            data.curRemovePlayer(user.username);
         } else {
             this.addPlayer(user.username, user.id);
             this.update();
@@ -89,8 +91,10 @@ module.exports = class Race {
                 this.players.find(player => player.username === user.username).time = null;
                 this.update();
             } else {
-                this.players.find(player => player.username === user.username).time = new Date().getTime() - this.startedAt;
+                let time = new Date().getTime() - this.startedAt;
+                this.players.find(player => player.username === user.username).time = time;
                 this.update();
+                data.curFinishPlayer(user.username, time, false);
             }
         }
     }
@@ -106,6 +110,7 @@ module.exports = class Race {
         if (!this.finished && this.started && this.includes(user.id)) {
             this.players.find(player => player.username === user.username).forfeited = true;
             this.update();
+            data.curFinishPlayer(user.username, null, true);
         }
     }
 
@@ -206,6 +211,11 @@ module.exports = class Race {
         this.seedName = name;
     }
 
+    getCategory() {
+        if(this.forcedCategory !== null) return this.forcedCategory;
+        return this.category;
+    }
+
     initiate(category, unranked, tournament, interaction, raceChannel, bingoLockout, bingoPassword, optionsMap, forceCategory) {
         this.defaults();
         if(forceCategory) this.forcedCategory = forceCategory;
@@ -215,7 +225,6 @@ module.exports = class Race {
         let user = interaction.user;
         this.randomusic = !interaction.options.getBoolean('vanilla-music');
         unlockVoiceChannel(this.client);
-
         if (category.includes("bingo")){
             createBingosyncRoom(this.client, bingoLockout, bingoPassword);
         }
@@ -236,6 +245,7 @@ module.exports = class Race {
 
         this.finished = false;
         this.tournament = tournament;
+        data.curNewRace(this.getCategory());
         this.addPlayer(user.username, user.id);
         this.generateMultistream()
         this.initiatedAt = new Date().getTime();
@@ -350,12 +360,12 @@ module.exports = class Race {
         this.message.edit({ components: [buttons] });
 
         lockVoiceChannel(this.client);
+        data.curStartRace();
     }
 
     end() {
         if (!this.playersForfeited()) {
-            let raceCategory = this.category;
-            if(this.forcedCategory !== null) raceCategory = this.forcedCategory;
+            let raceCategory = this.getCategory();
             let adjustments = elo.resolveMatch(this.players, raceCategory, this.ranked, this.raceId);
             if(this.ranked){
                 for (let i = 0; i < this.players.length; i++) {
@@ -394,6 +404,7 @@ module.exports = class Race {
             .addComponents(buttonComponents);
 
         this.message.edit({ components: [buttons] });
+        data.curFinishRace();
     }
 
     async update() {

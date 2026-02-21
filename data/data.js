@@ -3,6 +3,7 @@ const eloConfig = require('../elo/eloConfig.json');
 const config = require('../config.json');
 const path = require('path');
 const fs = require('fs');
+const http = require('http');
 const request = require('sync-request');
 
 const placementMatches = (eloConfig.placementMatches);
@@ -36,6 +37,50 @@ function restApiCall(method, path, body = null) {
         console.error("Request error:", error);
         return null; // Return null in case of error
     }
+}
+
+
+function restApiCallAsync(method, path, body = null) {
+    return new Promise((resolve) => {
+        const options = {
+            hostname: config.apiUrl,
+            port: config.apiPort,
+            path: path,
+            method: method,
+            headers: {
+                'Authorization': process.env.API_KEY,
+                'Content-Type': 'application/json'
+            }
+        };
+
+        const req = http.request(options, (res) => {
+            let data = '';
+            res.on('data', (chunk) => { data += chunk; });
+            res.on('end', () => {
+                if (res.statusCode >= 200 && res.statusCode < 300) {
+                    try {
+                        resolve(data ? JSON.parse(data) : null);
+                    } catch (e) {
+                        console.error("Parse error in restApiCallAsync:", e);
+                        resolve(null);
+                    }
+                } else {
+                    console.error(`Request ${method} ${path} failed with status:`, res.statusCode);
+                    resolve(null);
+                }
+            });
+        });
+
+        req.on('error', (error) => {
+            console.error("Request error (async):", error);
+            resolve(null);
+        });
+
+        if (body !== null) {
+            req.write(JSON.stringify(body));
+        }
+        req.end();
+    });
 }
 
 
@@ -209,6 +254,24 @@ module.exports = {
             result[items.username] = items.replay_url
         })
         return result
+    },
+    curNewRace: function(category){
+        restApiCall("POST", "/private/currentrace/create", {"preset": category});
+    },
+    curAddPlayer: function(username){
+        restApiCallAsync("POST", "/private/currentrace/add", {"player_name": username});
+    },
+    curRemovePlayer: function(username){
+        restApiCallAsync("DELETE", "/private/currentrace/remove", {"player_name": username});
+    },
+    curStartRace: function(){
+        restApiCallAsync("POST", "/private/currentrace/start");
+    },
+    curFinishPlayer: function(username, time, forfeited){
+        restApiCallAsync("POST", "/private/currentrace/player/finish", {"player_name": username, "finish_time": time, "forfeited": forfeited});
+    },
+    curFinishRace: function(){
+        restApiCallAsync("POST", "/private/currentrace/race/finish");
     },
     startNewSeason: function(seasonNumber) {
         if (players.length < 1) {
