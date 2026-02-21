@@ -263,7 +263,7 @@ module.exports = {
         restApiCallAsync("POST", "/private/currentrace/add", {"player_name": username});
     },
     curRemovePlayer: function(username){
-        restApiCallAsync("DELETE", "/private/currentrace/remove", {"player_name": username});
+        restApiCallAsync("DELETE", `/private/currentrace/remove/${username}`);
     },
     curStartRace: function(){
         restApiCallAsync("POST", "/private/currentrace/start");
