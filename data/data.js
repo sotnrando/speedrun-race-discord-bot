@@ -47,6 +47,7 @@ function restApiCallAsync(method, path, body = null) {
             port: config.apiPort,
             path: path,
             method: method,
+            agent: false,
             headers: {
                 'Authorization': process.env.API_KEY,
                 'Content-Type': 'application/json'
