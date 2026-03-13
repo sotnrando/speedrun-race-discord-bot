@@ -57,7 +57,8 @@ module.exports = {
                 },
             });
             const replayUrl = apiResponse.data.replay_url;
-            race.addReplay(replayUrl, interaction.user);
+            const timeSeconds = buffer.length >= 2 ? buffer.readUInt16LE(0) : null;
+            race.addReplay(replayUrl, interaction.user, timeSeconds);
 
             await interaction.editReply({ content: 'Replay submitted!' });
         } catch (error) {

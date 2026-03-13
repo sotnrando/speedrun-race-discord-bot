@@ -11,6 +11,13 @@ const Player = require('./player.js');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 const { v4: uuidv4 } = require('uuid');
 
+function formatReplayTime(totalSeconds) {
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+}
+
 module.exports = class Race {
     constructor(client, audioPlayer) {
         this.client = client;
@@ -173,9 +180,9 @@ module.exports = class Race {
         });
     }
 
-    addReplay(fileurl, user) {
+    addReplay(fileurl, user, timeSeconds = null) {
         this.replays.push(fileurl);
-        this.referenceReplays[user.id] = fileurl;
+        this.referenceReplays[user.id] = { url: fileurl, timeSeconds };
         this.players.find(player => player.username === user.username).replaySubmitted = true;
     }
 
@@ -463,8 +470,10 @@ module.exports = class Race {
             output += `Replays:\n`;
             this.players.forEach(player => {
                 if(player.replaySubmitted){
-                    let replayUrl = this.referenceReplays[player.id]
-                    output += `Player: ${player.username.replace(/_+/g, "_")} - [Replay Link](${replayUrl}) \n`;
+                    const replayData = this.referenceReplays[player.id];
+                    const replayUrl = typeof replayData === 'string' ? replayData : replayData.url;
+                    const timeStr = (replayData && replayData.timeSeconds != null) ? ` - ${formatReplayTime(replayData.timeSeconds)}` : '';
+                    output += `Player: ${player.username.replace(/_+/g, "_")} - [Replay Link](${replayUrl})${timeStr} \n`;
                 }
             })
         }
