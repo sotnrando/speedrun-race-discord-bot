@@ -36,6 +36,10 @@ module.exports = {
                 .setDescription('Adds Anti Freeze to the seed')
                 .setRequired(false))
         .addBooleanOption(option =>
+            option.setName('no-prologue')
+                .setDescription('Removes prologue from the seed')
+                .setRequired(false))
+        .addBooleanOption(option =>
             option.setName('purse-mode')
                 .setDescription('Adds Thats my Purse! to the seed')
                 .setRequired(false))
@@ -94,6 +98,7 @@ module.exports = {
             "-E": interaction.options.getBoolean('enemy-stat-rando'),
             "-x": interaction.options.getBoolean('magic-max'),
             "-z": interaction.options.getBoolean('anti-freeze'),
+            "-R": interaction.options.getBoolean('no-prologue'),
             "-y": interaction.options.getBoolean('purse-mode'),
             "-b": interaction.options.getBoolean('iws'),
             "-9": interaction.options.getBoolean('fast-warp'),
