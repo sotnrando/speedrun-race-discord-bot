@@ -69,19 +69,23 @@ module.exports = {
                 .setRequired(false))
         .addBooleanOption(option =>
             option.setName('guaranteed-drops')
-                .setDescription('Makes drops guaranteed fron enemies. Ring of Arcana changes which item is dropped.')
+                .setDescription('Makes drops guaranteed fron enemies.')
                 .setRequired(false))
         .addBooleanOption(option =>
             option.setName('reverse-lbc')
-                .setDescription('Reverse Library Cards. Hold down while using Library Card to go to Forbidden Library.')
+                .setDescription('Adds Reverse Library Cardsto the seed')
                 .setRequired(false))
         .addBooleanOption(option =>
             option.setName('godspeed-shoes')
-                .setDescription('Double-tap forward to run.')
+                .setDescription('Double-tap forward to run')
                 .setRequired(false))
         .addBooleanOption(option =>
             option.setName('library-shortcut')
-                .setDescription('Allows for quick library escape-entry.')
+                .setDescription('Allows for quick library escape-entry')
+                .setRequired(false))
+        .addBooleanOption(option =>
+            option.setName('single-hit-gears')
+                .setDescription('Adds single-hit gear mode to the seed')
                 .setRequired(false))
         .addStringOption(option =>
             option.setName('password')
@@ -109,6 +113,7 @@ module.exports = {
             "--rl": interaction.options.getBoolean('reverse-lbc'),
             "--gss": interaction.options.getBoolean('godspeed-shoes'),
             "--ls": interaction.options.getBoolean('library-shortcut'),
+            "--gp": interaction.options.getBoolean('single-hit-gears'),
         };
 
         if ((race.started || !race.finished) && race.tournament && !interaction.member.roles.cache.find(x => x.id === config.refereeRoleId)) {
