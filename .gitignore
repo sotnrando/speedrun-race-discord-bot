@@ -8,3 +8,4 @@ config.json
 data/players.json
 *.bin
 data/players.json
+.env.7z
