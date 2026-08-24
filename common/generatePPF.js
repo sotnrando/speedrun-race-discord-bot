@@ -104,7 +104,7 @@ module.exports = async (seed, seedName, channel, catagory, tournament,interactio
     }
     console.log(randoPath + "randomize", args);
     if (tournament && catagory !== "boss-rush"){
-        args.push("-t")
+        args.push("-t","--zr","--os")
     }
     if(optionsMap){
         for(const key in optionsMap){
